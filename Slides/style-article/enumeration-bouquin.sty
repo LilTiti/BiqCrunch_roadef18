@@ -1,0 +1,129 @@
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!    Enumeration      !!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+% copie de structure-bouquin 
+
+% decommenter ??? % 
+\newcommand{\tiret}{\rule[0.6ex]{1.3ex}{0.26ex}}
+\newcommand{\mysquare}{\rule[0.3ex]{1ex}{1ex}}
+\newcommand{\myqed}{\hfill \mysquare}
+\newcommand{\myqedenv}{}
+
+%-----------------------------------------------------------
+% Les itemizes de J
+%-----------------------------------------------------------
+%% \newenvironment{retraitsimple}{\begin{list}{\rule[0.6ex]{1.3ex}{0.18ex}~}{
+%%  \topsep=0.3ex \itemsep=0.3ex \labelsep=0em \parsep=0em
+%%  \listparindent=1em \itemindent=0em
+%%  \settowidth{\labelwidth}{{\bf --~}} \leftmargin=\labelwidth
+%% }}{\end{list}}
+
+%% \newenvironment{rs}{\begin{list}{\rule[0.6ex]{1.3ex}{0.18ex}~}{
+%%  \topsep=0.3ex 
+%%  \itemsep=0.3ex 
+%%  \labelsep=0em 
+%%  \parsep=0em
+%%  \listparindent=1em
+%%  \itemindent=0em
+%%  \settowidth{\labelwidth}{--~} 
+%%  \leftmargin=\labelwidth
+%% }}{\end{list}}
+
+%% \newenvironment{retraitnum}[1]{\begin{list}{}{
+%%  \topsep=0.5ex 
+%%  \itemsep=0.3ex 
+%%  \labelsep=0.3em 
+%%  \parsep=0ex
+%%  \listparindent=1em
+%%  \settowidth{\labelwidth}{(#1)}
+%%  \leftmargin=\labelwidth \addtolength{\leftmargin}{\labelsep}
+%% }}{\end{list}}
+
+%% \newenvironment{rn}[1]{\begin{list}{}{
+%%  \topsep=0.5ex 
+%%  \itemsep=0.3ex 
+%%  \labelsep=0.3em 
+%%  \parsep=0ex
+%%  \listparindent=1em
+%%  \settowidth{\labelwidth}{(#1)}
+%%  \leftmargin=\labelwidth 
+%%  %\addtolength{\leftmargin}{\labelsep}
+%% }}{\end{list}}
+
+\newenvironment{retraitsimple}{\begin{list}{\tiret~}{
+ \topsep=0.3ex \itemsep=0.3ex \labelsep=0em \parsep=0em
+ \listparindent=1em \itemindent=0em
+ \settowidth{\labelwidth}{{\bf --~}} \leftmargin=\labelwidth
+}}{\end{list}}
+
+\newenvironment{rs}{\begin{list}{\tiret~}{
+ \topsep=0.3ex
+ \itemsep=0.3ex
+ \labelsep=0em
+ \parsep=0em
+ \listparindent=1em
+ \itemindent=0em
+ \settowidth{\labelwidth}{--~}
+ \leftmargin=\labelwidth
+}}{\end{list}}
+
+\newenvironment{retraitnum}[1]{\begin{list}{}{
+ \topsep=0.5ex
+ \itemsep=0.3ex
+ \labelsep=0.3em
+ \parsep=0ex
+ \listparindent=1em
+ \settowidth{\labelwidth}{(#1)}
+ \leftmargin=\labelwidth \addtolength{\leftmargin}{\labelsep}
+}}{\end{list}}
+
+\newenvironment{rn}[1]{\begin{list}{}{
+ \topsep=0.5ex
+ \itemsep=0.3ex
+ \labelsep=0.3em
+ \parsep=0ex
+ \listparindent=1em
+ \settowidth{\labelwidth}{(#1)}
+ \leftmargin=\labelwidth
+ %\addtolength{\leftmargin}{\labelsep}
+}}{\end{list}}
+
+
+%-----------------------------------------------------------
+% Globalisation par Gab des itemizes de J
+%-----------------------------------------------------------
+\newcommand{\numtoi}[1]{
+	\ifthenelse{ \equal{#1}{1} }{i}{
+	\ifthenelse{ \equal{#1}{2} }{ii}{
+	\ifthenelse{ \equal{#1}{3} }{iii}{
+	\ifthenelse{ \equal{#1}{4} }{iv}{
+	\ifthenelse{ \equal{#1}{5} }{v}{
+	\ifthenelse{ \equal{#1}{6} }{vi}{
+	\ifthenelse{ \equal{#1}{7} }{vii}{
+	\ifthenelse{ \equal{#1}{8} }{viii}{
+	\ifthenelse{ \equal{#1}{9} }{ix}{
+	\ifthenelse{ \equal{#1}{10} }{x}{
+		ERREUR,~MODIFIER~LA~MACRO~numtoi
+	}	}	}	}	}	}	}	}	} }
+}	
+
+\newcounter{cretraiti}
+\newenvironment{ri}[1]{
+
+\begin{list}{($\numtoi{\thecretraiti}$)}{
+	\usecounter{cretraiti}
+ 	\topsep=0.5ex 
+ 	\itemsep=0.3ex 
+ 	\labelsep=0.3em 
+ 	\parsep=0ex
+ 	\listparindent=1em
+ 	\settowidth{\labelwidth}{(#1)}
+ 	\leftmargin=\labelwidth 
+ 	%\addtolength{\leftmargin}{\labelsep}
+}}{\end{list}
+}
+
+

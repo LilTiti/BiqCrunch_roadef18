@@ -1,0 +1,420 @@
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!!!!!!                   !!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!!   Les fractions   !!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!!                   !!!!!!!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+% La taille des fractions doit s'adapter au contexte: grandes dans une
+% équation, petites en exposant ou en indice. La commande \f gère pour vous
+% tous les cas.
+%
+% Exemple: $ \f{1}{2} $
+%       $ x^{\f{3}{2}} $
+%       $ \Int{0}{ \f{pi}{2} } \cost \dt $
+\newcommand{\f}[2]{{\ensuremath{\mathchoice%
+    {\dfrac{#1}{#2}}
+        {\dfrac{#1}{#2}}
+    {\frac{#1}{#2}}
+    {\frac{#1}{#2}}
+    }}}
+
+% Dans le texte, on a souvent envie d'écrire 1/2 plutt que \f{1}{2}.
+% La macro \tf permet de corriger rapidement un \f malheureux.
+% Exemple: $ \tf{1}{\sqrt{2}} $  <==>  $1 / \sqrt{2}$
+\newcommand{\tf}[2]{\ensuremath{#1/#2}}
+
+
+
+
+
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!   Les parenthèses   !!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+% Pour indiquer des parenthèses autour d'une grosse expression, il peut
+% parfois être utile d'utiliser une macro plutôt que la commande explicite,
+% qui est \left(\right).
+%
+% Exemple: $ \pa{ \Int{0}{1} f(t) \dt }^{\f{1}{2}} $
+%
+% Attention, il ne faut pas utiliser cette macro dans les deux cas suivants:
+%
+% * Autour d'une lettre seule, comme dans $f\pa(x)$: l'espace après
+%   le $f$ ne serait pas bon. Utiliser simplement $f(x)$.
+%
+% * Autour d'un vecteur seul, comme dans $\pa{\vect{E}}$. Il est
+%   normal et souhaitable que la flèche dépasse des parenthèses.
+%   Utiliser simplement $(\vect{E})$. S'il y a une fraction,
+%   préférez $ \pa{ \f{1}{2} \vect{E} } $ à            $ \pa{ \f{\vect{E}}{2} $.
+%
+% En résumé n'utilisez \pa que lorsque vous en avez vraiment besoin, ce qui
+% n'est pas le cas courant.
+
+\newcommand{\pa}[1]{\ensuremath{\left(#1\right)}}
+
+% Des parenthèses autour d'une fraction (très très pratique!).
+% Exemple: $ \paf{1}{2} $
+\newcommand{\paf}[2]{\ensuremath{\left(\f{#1}{#2}\right)}}
+
+% Et l'analogue de \tf pour les parenthèses autour d'une fraction:
+\newcommand{\patf}[2]{\ensuremath{\left({#1}/{#2}\right)}}
+
+% On peut aussi vouloir des crochets de la bonne taille plutôt que des
+% parenthèses (analogue de \pa: mêmes recommandations).
+% Exemple: $\crochets{ \f{1}{2} x \ln x }$
+\newcommand{\crochets}[1]{\ensuremath{\left[#1\right]}}
+\newcommand{\pac}[1]{\ensuremath{\crochets{#1}}}        % Synonyme
+
+% Ou pourquoi pas des accolades (analogue de \pa: mêmes recommandations).
+\newcommand{\accolades}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\paa}[1]{\ensuremath{\accolades{#1}}}       % Synonyme
+
+% Ou encore des barres pour les valeurs absolues (analogue de \pa: mêmes
+% recommandations).
+\newcommand{\abs}[1]{\ensuremath{\left|#1\right|}}
+
+% Pour virer des parenthèses quand on corrige un fichier.
+\newcommand{\nopa}[1]{\ensuremath{#1}}
+
+% Pour transformer \pa en parenthèses simples.
+\newcommand{\cpa}[1]{\ensuremath{(#1)}}
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   filet     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+\makeatletter
+
+\newbox\bk@bxb
+\newbox\bk@bxa
+\newif\if@bkcont 
+\newif\ifbkcount
+\newcount\bk@lcnt
+
+\def\breakboxskip{2pt}
+\def\breakboxparindent{1.8em}
+\def\margesep{0cm}	% Écart entre la marge de gauche et le filet.
+\def\intervalle{1mm}	% Écart supplémentaire entre le filet et le texte.
+
+\def\filet{\vskip\breakboxskip\relax
+\setbox\bk@bxb\vbox\bgroup
+\advance\linewidth -\fboxrule
+\advance\linewidth -\margesep
+\advance\linewidth -\intervalle
+\advance\linewidth -\fboxsep
+\hsize\linewidth\@parboxrestore
+\parindent\breakboxparindent\relax}
+
+% \@tempdimb: amount of vertical skip 
+% between the first line (\bk@bxa) and the rest (\bk@bxb)
+\def\bk@split{%
+\@tempdimb\ht\bk@bxb % height of original box
+\advance\@tempdimb\dp\bk@bxb 
+\setbox\bk@bxa\vsplit\bk@bxb to\z@ % split it
+\setbox\bk@bxa\vbox{\unvbox\bk@bxa}% recover height & depth of \bk@bxa
+\setbox\@tempboxa\vbox{\copy\bk@bxa\copy\bk@bxb}% naive concatenation
+\advance\@tempdimb-\ht\@tempboxa 
+\advance\@tempdimb-\dp\@tempboxa}% gap between two boxes
+ 
+
+% \@tempdima: height of the first line (\bk@bxa) + fboxsep
+\def\bk@addfsepht{%
+     \setbox\bk@bxa\vbox{\vskip\fboxsep\box\bk@bxa}}
+
+\def\bk@addskipht{%
+     \setbox\bk@bxa\vbox{\vskip\@tempdimb\box\bk@bxa}}
+
+% \@tempdima: depth of the first line (\bk@bxa) + fboxsep
+\def\bk@addfsepdp{%
+     \@tempdima\dp\bk@bxa
+%     \advance\@tempdima\fboxsep
+     \dp\bk@bxa\@tempdima}
+
+% \@tempdima: depth of the first line (\bk@bxa) + vertical skip
+\def\bk@addskipdp{%
+     \@tempdima\dp\bk@bxa
+     \advance\@tempdima\@tempdimb
+     \dp\bk@bxa\@tempdima}
+
+\def\bk@line{%
+    \hbox to \linewidth{\ifbkcount\smash{\llap{\the\bk@lcnt\ }}\fi
+    \hskip\margesep
+    \vrule \@width\fboxrule\hskip\fboxsep
+    \hskip\intervalle
+    \box\bk@bxa\hfil
+%    \hskip\fboxsep
+	}}
+
+\def\endfilet{\egroup
+\ifhmode\par\fi{\noindent\bk@lcnt\@ne 
+\@bkconttrue\baselineskip\z@\lineskiplimit\z@
+\lineskip\z@\vfuzz\maxdimen
+\bk@split\bk@addfsepht\bk@addskipdp
+\ifvoid\bk@bxb      % Only one line
+\def\bk@fstln{\bk@addfsepdp
+%\vbox{\hrule\@height\fboxrule\bk@line\hrule\@height\fboxrule}}%
+\vbox{\bk@line}}%
+\else               % More than one line
+%\def\bk@fstln{\vbox{\hrule\@height\fboxrule\bk@line}\hfil
+\def\bk@fstln{\vbox{\bk@line}\hfil
+\advance\bk@lcnt\@ne
+\loop 
+ \bk@split\bk@addskipdp\leavevmode
+\ifvoid\bk@bxb      % The last line
+ \@bkcontfalse\bk@addfsepdp
+% \vtop{\bk@line\hrule\@height\fboxrule}%
+ \vtop{\bk@line}%
+\else               % 2,...,(n-1)
+ \bk@line
+\fi
+ \hfil\advance\bk@lcnt\@ne
+\if@bkcont\repeat}%
+\fi
+\leavevmode\bk@fstln\par}\vskip\breakboxskip\relax}
+
+\bkcountfalse
+
+\makeatother
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   Centrer   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+% LaTeX prévoit un mï¿½anisme pour centrer les équations: $$$$...
+%. Ces commandes doivent être évitées dans une cretaine mesure,
+% parce que l'espace vertical placé avant et après
+% ces environnements change d'un site à l'autre, de sorte qu'il n'est pas
+% possible de préserver une mise en page soignée.
+%
+% En remplacement, voici une série de commandes plus générales (elles
+% permettent de centrer n'importe quoi: texte, formule, tableau, dessin, etc.).
+%
+% Supposons que l'on veuille simplement centrer une formule sur la page, comme
+% ceci:
+%
+%               x_0 = 7
+%
+% On pourra utiliser la commande \centers.
+%
+% Exemple: \centers{$ x_0 = 7 $}
+%      \centers{Ceci est un texte centrée}
+%
+% On peut vouloir y ajouter un petit mot de liaison en début de ligne, collée à la marge, en 
+% particulier dans une suite de calculs, comme ceci:
+%
+% d'o              x_0 = 7
+%
+% On pourra alors utiliser \leftcenters.
+%
+% Exemple: \leftcenters{ d'o }{ $x_0 = 7$ }
+%
+% Il est aussi parfois utile de placer du texte à droite de la ligne, collé à la marge, comme ceci:
+%
+% d'où              x_0 = 7                 (2)
+%
+% On utilisera dans ce cas \leftcentersright.
+%
+% Exemple: \leftcentersright{ d'o }{ $x_0 = 7$ }{ \deux }
+%
+% Et si l'on ne souhaite rien placer à gauche, on dispose de \centersright.
+%
+% Pour toutes ces commandes, le texte du milieu est parfaitement centré sur
+% la page quels que soient les deux autres arguments de \leftcentersright.
+%
+% Attention dès lors au risque de chevauchement: puisque le texte à gauche ne
+% pousse pas celui du milieu vers la droite, ces deux textes peuvent très
+% bien se chevaucher s'ils sont tous deux suffisamment longs. LaTeX ne vous
+% préviendra pas, il faudra le déceler vous-mêmes en regardant une version
+% compilée. Cela ne devrait en général poser aucun problème.
+%
+% Les trois commandes précédentes admettent une variante en remplaçant
+% 'centers' par 'encadre'; dans ce cas, le texte à centrer sera encadré
+%
+% Exemple: \leftencadre{ En conclusion, }{ $A=0$ }
+%
+% Enfin, tous ces environnements (aussi bien avec 'centers' qu'avec 'encadre'
+% laissent un espace vertical avant et après eux. Cet espace est, par défaut,
+% équivalent à un \medskip. Mais vous pouvez le changer en passant un argument
+% optionnel.
+%
+% Exemple:  \centers[0] <==>    Pas d'espace
+%       \centers[1] <==>    Laisser un \smallskip
+%       \centers[2] <==>    Laisser un \medskip
+%       \centers[3] <==>    Laisser un \bigskip
+%       \centers[4] <==>    Laisser 1cm
+%
+% L'espace laissé avant et l'espace laissé après sont toujours identiques.
+
+\newcounter{vcenterstest}
+\newlength{\leftlength}
+\newlength{\rightlength}
+\newlength{\vcentersskip}
+\newcommand{\leftcentersright}[4][2]{%
+        \settowidth{\leftlength}{#2}%
+        \settowidth{\rightlength}{#4}%
+        \setcounter{vcenterstest}{#1}%
+        \ifthenelse{\value{vcenterstest} = 0}
+                {\setlength{\vcentersskip}{0pt}}{}%
+        \ifthenelse{\value{vcenterstest} = 1}
+                {\setlength{\vcentersskip}{\smallskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 2}
+                {\setlength{\vcentersskip}{\medskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 3}
+                {\setlength{\vcentersskip}{\bigskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 4}
+                {\setlength{\vcentersskip}{1cm}}{}%
+                % On laisse un espace vertical défini par l'argument
+                % optionnel #1
+        \vskip\vcentersskip
+                % On place #2 et on recule de sa longueur
+        \noindent#2\hskip-\leftlength%
+                % On centre #3
+        \hfill#3\hfill%
+                % On va au bout de la ligne, on recule de la longueur de #4 et
+                % on place #4
+        \mbox{}\hskip-\rightlength#4%
+                % On laisse un espace vertical défini par l'argument
+                % optionnel #1
+        \vskip\vcentersskip%
+    }
+\newcommand{\centers}[2][2]{\leftcentersright[#1]{}{#2}{}}
+\newcommand{\leftcenters}[3][2]{\leftcentersright[#1]{#2}{#3}{}}
+\newcommand{\centersright}[3][2]{\leftcentersright[#1]{}{#2}{#3}}
+\newcommand{\leftencadreright}[4][2]{\leftcentersright[#1]{#2}{\fbox{#3}}{#4}}
+\newcommand{\encadre}[2][2]{\leftcentersright[#1]{}{\fbox{#2}}{}}
+\newcommand{\leftencadre}[3][2]{\leftcentersright[#1]{#2}{\fbox{#3}}{}}
+\newcommand{\encadreright}[3][2]{\leftcentersright[#1]{}{\fbox{#2}}{#3}}
+\newcommand{\remandcenters}[3][2]{\leftcentersright[#1]{#2}{#3}{}} % Synonyme
+\newcommand{\centrer}[2][2]{\leftcentersright[#1]{}{#2}{}}  % Synonyme
+\newcommand{\Centers}[2][2]{\leftcentersright[#1]{}{#2}{}}  % Synonyme
+
+
+
+\newcommand{\centersav}[3]{%
+     %   \settowidth{\leftlength}{0}%
+     %   \settowidth{\rightlength}{0}%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % SKIP AVANT
+        \setcounter{vcenterstest}{#1}%
+        \ifthenelse{\value{vcenterstest} = 0}
+                {\setlength{\vcentersskip}{0pt}}{}%
+        \ifthenelse{\value{vcenterstest} = 1}
+                {\setlength{\vcentersskip}{\smallskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 2}
+                {\setlength{\vcentersskip}{\medskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 3}
+                {\setlength{\vcentersskip}{\bigskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 4}
+                {\setlength{\vcentersskip}{1cm}}{}%
+                % On laisse un espace vertical défini par l'argument
+                % optionnel #1
+        \vskip\vcentersskip
+                % On place #2 et on recule de sa longueur
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % CORPS DU TEXTE
+   %     \noindent\hskip-\leftlength%
+                % On centre #3
+        \hfill#3\hfill%
+                % On va au bout de la ligne, on recule de la longueur de #4 et
+                % on place #4
+        \mbox{}% \hskip-\rightlength%
+                % On laisse un espace vertical défini par l'argument
+                % optionnel #1
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % SKIP APRES
+        \setcounter{vcenterstest}{#2}%
+        \ifthenelse{\value{vcenterstest} = 0}
+                {\setlength{\vcentersskip}{0pt}}{}%
+        \ifthenelse{\value{vcenterstest} = 1}
+                {\setlength{\vcentersskip}{\smallskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 2}
+                {\setlength{\vcentersskip}{\medskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 3}
+                {\setlength{\vcentersskip}{\bigskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 4}
+                {\setlength{\vcentersskip}{1cm}}{}%
+                % On laisse un espace vertical défini par l'argument
+                % optionnel #1
+        \vskip\vcentersskip
+    }
+
+
+\newcommand{\centersrightav}[4]{%
+     %   \settowidth{\leftlength}{0}%
+     %   \settowidth{\rightlength}{0}%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % SKIP AVANT
+        \setcounter{vcenterstest}{#1}%
+        \ifthenelse{\value{vcenterstest} = 0}
+                {\setlength{\vcentersskip}{0pt}}{}%
+        \ifthenelse{\value{vcenterstest} = 1}
+                {\setlength{\vcentersskip}{\smallskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 2}
+                {\setlength{\vcentersskip}{\medskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 3}
+                {\setlength{\vcentersskip}{\bigskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 4}
+                {\setlength{\vcentersskip}{1cm}}{}%
+                % On laisse un espace vertical défini par l'argument
+                % optionnel #1
+        \vskip\vcentersskip
+                % On place #2 et on recule de sa longueur
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % CORPS DU TEXTE
+   %     \noindent\hskip-\leftlength%
+                % On centre #3
+        \hfill#3\hfill%
+                % On va au bout de la ligne, on recule de la longueur de #4 et
+                % on place #4
+        \mbox{}% \hskip-\rightlength%
+                % On laisse un espace vertical défini par l'argument
+                % optionnel #1
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % SKIP APRES
+        \setcounter{vcenterstest}{#2}%
+        \ifthenelse{\value{vcenterstest} = 0}
+                {\setlength{\vcentersskip}{0pt}}{}%
+        \ifthenelse{\value{vcenterstest} = 1}
+                {\setlength{\vcentersskip}{\smallskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 2}
+                {\setlength{\vcentersskip}{\medskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 3}
+                {\setlength{\vcentersskip}{\bigskipamount}}{}%
+        \ifthenelse{\value{vcenterstest} = 4}
+                {\setlength{\vcentersskip}{1cm}}{}%
+                % On laisse un espace vertical défini par l'argument
+                % optionnel #1
+        \mbox{}\hskip-\rightlength#4%
+        \vskip\vcentersskip
+    }

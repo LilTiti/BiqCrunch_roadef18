@@ -1,0 +1,809 @@
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\Conv}{conv}
+\DeclareMathOperator{\convf}{\overline{conv}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\Diag}{Diag}
+\DeclareMathOperator{\dist}{d}
+\DeclareMathOperator{\svec}{svec}
+\DeclareMathOperator{\spec}{spec}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Par}{par}
+\DeclareMathOperator{\range}{range}
+\DeclareMathOperator{\Null}{null}
+\DeclareMathOperator{\lin}{lin}
+\DeclareMathOperator{\aff}{aff}
+\DeclareMathOperator{\Ri}{ri}
+\DeclareMathOperator{\rint}{ri}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator{\Int}{int}
+\DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\bd}{bd}
+\DeclareMathOperator{\proj}{P}
+\DeclareMathOperator{\Proj}{P}
+\DeclareMathOperator{\prox}{prox}
+\DeclareMathOperator{\Ima}{Im}
+%\DeclareMathOperator{\val}{val}
+\DeclareMathOperator{\sousu}{sous-}
+\DeclareMathOperator{\Sub}{S}
+\DeclareMathOperator{\reg}{reg}
+
+\newcommand{\sous}{\sousu\!}
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!     Fonction        !!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+% Lorsque l'on définit une fonction, on a besoin de:
+%   * son nom
+%   * l'ensemble de départ
+%   * l'ensemble d'arrivée
+%   * le nom de la variable
+%   * l'expression de la fonction
+% Exemple: $ \fonction{f}{ \R }{ \Z }{ x }{ \partieentiere{x} } $
+
+\newcommand{\fonction}[5]{%
+        \ensuremath{#1\colon
+        \left\{\hskip -1.5 mm
+        \begin{array}{c@{\ }c@{\ }l}
+        \medskip #2 & \longrightarrow & #3 \\
+        #4 & \longmapsto & #5 \\
+        \end{array}
+        \right .
+        }}
+
+\newcommand{\fonctionsimple}[4]{%
+        \ensuremath{
+        \begin{array}{c@{\ }c@{\ }l}
+        \medskip #1 & \longrightarrow & #2 \\
+        #3 & \longmapsto & #4 \\
+        \end{array}
+        }}
+
+
+
+\newcommand{\ffonction}[5]{%
+        \ensuremath{#1\colon
+        #2 \rightarrow #3,
+        #4 \mapsto #5
+        }}
+
+
+% Restrictions
+% Pour dessiner la restriction d'une fonction ï¿½un ensemble, la coutume est
+% de placer le nom de la fonction, une barre verticale et en indice,
+% l'ensemble dans lequel on fait vivre la restriction. C'est l'objet de cette
+% commande.
+%
+% Exemple: $ \rest{f}{ \Z } $
+
+\newlength{\restsubwidth}
+\newlength{\restsubheight}
+\newlength{\restsubmoreheight}
+\setlength{\restsubmoreheight}{4 pt}
+\newcommand{\rest}[2]{%
+        \settowidth{\restsubwidth}{\ensuremath{#2}}
+        \settoheight{\restsubheight}{\ensuremath{{}_{#2}}}
+        \ensuremath{{#1\hskip 0.5 pt}_{\vrule\kern2pt\parbox[b][%
+        \the\restsubheight +
+                \the\restsubmoreheight][b]{\the\restsubwidth}{%
+                        \ensuremath{{}_{#2}}}}}
+        }
+
+% La partie entière peut être écrite à l'américaine plutôt qu'avec
+% l'énigmatique fonction 'E'. C'est efficace...
+\newcommand{\partieentiere}[1]{\ensuremath{\left\lfloor#1\right\rfloor}}
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!                            !!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!   Limites et équivalents   !!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!                            !!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+% Les limites.
+%
+% Pour indiquer qu'une variable tend vers une valeur, on peut utiliser \to,
+% comme dans $ x \to x_0$. Pour indiquer ensuite que f(x) tend vers \ell
+% lorsque x tend vers x_0, on a envie de reprï¿½enter une longue flï¿½he portant
+% en dessous la mention $x \to x_0$.
+%
+% Exemple: $ f(x)  \tv{x \to x_0}  \ell $
+%
+% Lorsque la variable est $n$ est tend vers l'infini, on a un raccourci.
+%
+% Exemple: $ u_n \tvn \ell $
+\newcommand{\tv}[1]{\ensuremath{\xrightarrow[#1]{}}}
+\newcommand{\tvn}{\ensuremath{\tv{n \to \infty}}}
+
+% Indiquer une limite avec lim pose un problème car, par defaut, la
+% commande  \lim ne met pas bien en dessous ce que l'on aimerait
+% qui soit en dessous. On utilise plutôt \limt.
+%
+% Exemple: $ \limt_{x \to 0} \f{\sin x}{x} = 1 $
+\newcommand{\limt}{\ensuremath{\lim\limits}}
+\newcommand{\limsupt}{\ensuremath{\limsup\limits}}
+
+
+% Grand O  et petit o sont dans un bateau.
+% Exemple: $ \sin 1/n = \gdo{ 1/n } $
+\newcommand{\pto}[1]{\ensuremath{\text{o}\left ( #1 \right )}}
+\newcommand{\gdo}[1]{\ensuremath{O\left ( #1 \right )}}
+
+
+% Plus et moins l'infini.
+%
+% Lorsque l'on écrit $+\infty$, le plus est trop gros. On fait la même
+% remarque avec $-\infty$. Pour contourner ce problème, vous pouvez utiliser
+% des macros spécifiques à ces cas-là
+%
+% Exemple: $ \sqrt{n} \tvn \pinf $
+%
+% Attention, n'utilisez jamais \plus et \moins.
+% Ces macros n'existent que pour définir \pinf et \minf et quelques autres
+% bidouilles comme \Rplus.
+
+\newcommand{\plus}{\mbox{\protect\raisebox{.2mm}{\tiny{\ensuremath{+}}}}}
+\newcommand{\moins}{\mbox{\protect\raisebox{.2mm}{\tiny{\ensuremath{-}}}}}
+\newcommand{\pinf}{\plus\ensuremath{\infty}}
+\newcommand{\minf}{\moins\ensuremath{\infty}}
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!                            !!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!       Ensembles            !!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!                            !!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+
+% Le complémentaire d'un ensemble (sans préciser l'ensemble de référenence)
+% peut être noté par \compl.
+% Exemple: $ \compl{A} $
+\newcommand{\compl}[1]{\ensuremath{\sideset{^{\text{c}}}{}%
+        {\mathop{#1}\nolimits}}}
+
+% La difference des ensembles
+\renewcommand{\setminus}{\smallsetminus}    % $\R \setminus \Q$
+\newcommand{\bs}{\ensuremath{\backslash}}   % Quand \setminus est trop petit
+
+
+% Les ensembles.
+\newcommand{\card}{\ensuremath{\mathop{\rm Card\,}\nolimits}}
+\newcommand{\Min}{\ensuremath{\mathop{\,\rm min\,}\limits}}
+\newcommand{\Max}{\ensuremath{\mathop{\,\rm max\,}\limits}}
+\newcommand{\Maj}{\ensuremath{\mathop{\,\rm Maj\,}\limits}}
+\newcommand{\Inf}{\ensuremath{\mathop{\,\rm inf\,}\limits}}
+\newcommand{\Sup}{\ensuremath{\mathop{\,\rm sup\,}\limits}}
+
+
+% Quand on ï¿½rit un ensemble en extension, il faut prï¿½iser le domaine
+% d'existence de la variable, en sï¿½arant cette prï¿½ision de ce qui prï¿½ï¿½e
+% au moyen d'une barre verticale. Il est alors bon de laisser un espace avant
+% et aprï¿½ cette barre: c'est ce que fait la commande \|.
+%
+% Exemple: $ \{ x\in\R    \|    \sin x = 0}    =    \pi\Z $
+%
+% Lorsque la hauteur de la barre doit s'adapter ï¿½des accolades de grande
+% taille, on ne peut pas utiliser \|. Il faut alors procï¿½er ï¿½la main.
+%
+% Exemple: $\left\{ \Sum{k=1}{n} (-1)^k/k     \ \right|\
+%       n \in \Nstar      \left.\vphantom{\Sum{k=1}{n}}\right\} $
+%
+% On peut aussi utiliser directement le constructeur \Big pour imposer la
+% taille des dï¿½imiteurs.
+%
+% Exemple: $\Big\{ \Sum{k=1}{n} (-1)^k/k   \ \Big|\    n \in \Nstar   \Big\} $
+
+\renewcommand{\|}{\ensuremath{\:|\:}}
+
+% Les mathématiques utilisent beaucoup les listes, en particulier en algèbre
+% linéaire, par exemple pour dï¿½rire une base. Composer ces listes peut être
+% automatisï¿½ puisque l'on n'a en gï¿½ï¿½al besoin que du nom de la famille
+% ('e') et de l'indice de fin ('n'), comme dans (e_1 , ... , e_n).
+%
+% Exemple: $ \xliste{e}{n} $
+%
+% Pour faciliter l'utilisation de cette commande, des variantes existent pour
+% les indices de fin d'ï¿½umï¿½ation les plus courants (n, p, m, etc.).
+%
+% Exemple: La famille $\nlist{e}$ est libre.
+
+\newcommand{\xlist}[2]{\ensuremath{\left({#1}_1,\ldots,{#1}_{#2}\right)}}
+\newcommand{\xliste}[2]{\xlist{#1}{#2}}             % Synonyme
+\newcommand{\nlist}[1]{\xlist{#1}{n}}
+\newcommand{\mlist}[1]{\xlist{#1}{m}}
+\newcommand{\plist}[1]{\xlist{#1}{p}}
+\newcommand{\rlist}[1]{\xlist{#1}{r}}
+\newcommand{\nliste}[1]{\nlist{#1}}             % Synonyme
+\newcommand{\mliste}[1]{\mlist{#1}}             % Synonyme
+\newcommand{\pliste}[1]{\plist{#1}}             % Synonyme
+\newcommand{\rliste}[1]{\rlist{#1}}             % Synonyme
+
+\newcommand{\xfamille}[2]{\ensuremath{\left{{#1}_1,\ldots,{#1}_{#2}\right}}}
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!                            !!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!        Intervalles         !!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!                            !!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+% Les intervalles.
+%
+% Bien composer un intervalle n'est pas facile: il faut adapter la taille des
+% crochets et bien espacer le dï¿½imiteur central, qui doit ï¿½re un
+% point-virgule. On dispose de commandes qui prennent tout cela en charge.
+% On prï¿½ise si les intervalles sont Ouverts ou Fermï¿½ ï¿½gauche et ï¿½droite,
+% puis les valeurs des bornes.
+%
+% Exemple:  \intff{0}{1}    <==>    [0;1]
+%       \intof{0}{1}    <==>    ]0;1]
+%       \intfo{0}{1}    <==>    [0;1[
+%       \intoo{0}{1}    <==>    ]0;1[
+%
+% Si le membre de gauche (resp. de droite) est omis, il est remplacï¿½par
+% -\infty (resp. +\infty).
+%
+% Pour les intervalles d'entiers, on peut ajouter une barre verticale dans les
+% crochets, et les bornes doivent alors ï¿½re incluses dans l'ensemble. La
+% taille de ces crochets modifiï¿½ ne dï¿½end pas des arguments; en cas de
+% besoin, utiliser la notation ensembliste.
+%
+% Exemple: $ \forall k \in \intn{0}{n-1}    \quad    |u_k| < 1 $
+
+\newcommand{\TestGauche}[1]{\ifthenelse{\equal{#1}{}}{\minf}{#1}}
+\newcommand{\TestDroite}[1]{\ifthenelse{\equal{#1}{}}{\pinf}{#1}}
+\newcommand{\intff}[2]{\ensuremath{\left [ \, \TestGauche{#1} \,,%
+    \TestDroite{#2} \, \right ] }}
+\newcommand{\intof}[2]{\ensuremath{\left ] \, \TestGauche{#1} \,,%
+    \TestDroite{#2} \, \right ] }}
+\newcommand{\intfo}[2]{\ensuremath{\left [ \, \TestGauche{#1} \,,%
+    \TestDroite{#2} \, \right [ }}
+\newcommand{\intoo}[2]{\ensuremath{\left ] \, \TestGauche{#1} \,,%
+    \TestDroite{#2} \, \right [ }}
+
+% intervalles d'entiers
+\newcommand{\intn}[2]{\ensuremath{[\![ \, #1 \,,\, #2 \,]\!]}}
+\newcommand{\intnn}[2]{\intn{#1}{#2}}               % Synonyme
+\newcommand{\intnfo}[2]{\ensuremath{[\![ \, #1 \,,\, #2 \,[\![}}
+\newcommand{\intnof}[2]{\ensuremath{]\!] \, #1 \,,\, #2 \,]\!]}}
+
+%% "segment" d'entiers
+%\newcommand{\seg}[2]{{\llbracket \, #1 \,;\, #2 \, \rrbracket}}
+
+
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!                              !!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!          Logique             !!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!        Relation              !!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+\newcommand{\implique}{\ensuremath{\;\Longrightarrow\;}}
+\newcommand{\imply}{\implique}                  % Synonyme
+\newcommand{\SSI}{\ensuremath{\;\Longleftrightarrow\;}}
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!!!!!!                  !!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!!   Les tableaux   !!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!!                  !!!!!!!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+% Lorsqu'aucun de ces environnements ne peut vous satisfaire, il faut crï¿½r
+% un tableau {array} en lui passant des arguments: une lettre par colonne
+% ('c' pour centrer, 'l' pour aligner ï¿½gauche et 'r' pour aligner ï¿½droite)
+% et on peut remplacer l'espace intercolonnes par un argument entre @{}.
+%
+% Exemple: $\begin{array}{r @{\ \geq\ } l}
+%       a & b \\    Dessine un tableau dans lequel on insï¿½e entre
+%       c & d \\    la premiï¿½e et la deuxiï¿½e colonne le symbole
+%       \end{array}$    supï¿½ieur ou ï¿½al.
+
+\newenvironment{syst}[1][c]%
+    {\ensuremath{\left \{ \hskip -1.5 mm \begin{array}{#1@{\ =\ }l}}}%
+    {\end{array}\right.}
+\newenvironment{systsimple}[1][c]%
+    {\ensuremath{\begin{array}[t]{#1@{\ =\ }l}}}%
+    {\end{array}}
+\newenvironment{varsyst}[1][r]%
+    {\ensuremath{\left \{ \hskip -1.5 mm%
+     \begin{array}{#1@{\ }c@{\ }l}}}%
+    {\end{array}\right.}
+\newenvironment{accolade}[1][c]%
+    {\ensuremath{\left \{ \hskip -1.5 mm \begin{array}{#1@{\quad}l}}}%
+    {\end{array}\right.}
+\newenvironment{leqsystsimple}[1][c]%
+    {\ensuremath{\begin{array}[t]{#1@{\ =\ }l}}}%
+    {\end{array}}
+\newenvironment{rcl}[1][r]%
+    {\ensuremath{\begin{array}[t]{#1@{\ }c@{\ }l}}}%
+    {\end{array}}
+
+% Dans les tableaux de variations, on a souvent besoin d'insï¿½er deux barres
+% verticales pour indiquer les zones interdites.
+\newcommand{\barres}{\ensuremath{\vline\:\vline}}
+
+% Dessiner une matrice ou un determinant peut se faire avec les environnements
+% {matrice} et {determinant}.
+%
+% Exemple: $\begin{matrice} $\begin{determinant}
+%       1 & 0 \\        1 & 0 \\
+%       0 & 1 \\        0 & 1 \\
+%       \end{matrice}$   \end{determinant}$
+%
+% Pour indiquer des points de suspension qui descendent la 1ere diagonale,
+% LaTeX fournir \ddots (down dots). Il fournit egalement \cdots pour les
+% points de suspension horizontaux et \vdots pour les points de
+% suspension verticaux. Pour indiquer des points de suspension qui remontent
+% la 2ieme diagonale, on peut utiliser \udots.
+%
+% Exemple: $\begin{matrice}
+%          0   & \cdots &    0   &    1   \\
+%       \vdots & \udots & \udots &    0   \\
+%          0   & \udots & \udots & \vdots \\
+%          1   &    0   & \cdots &    0   \\
+%       \end{matrice}$
+
+\newenvironment{matrice}%
+    {\begin{bmatrix}}%
+    {\end{bmatrix}}
+\newenvironment{determinant}%
+    {\begin{vmatrix}}%
+    {\end{vmatrix}}
+
+%% Pour les matrices
+\newcommand{\udots}{\ensuremath{\hskip 2pt \raisebox{1pt}{.} \hskip 1pt%
+        \raisebox{4pt}{.} \hskip 1pt \raisebox{7pt}{.} \hskip 2pt}}
+    % up-dots, le symetrique de \ddots sur la diagonale.
+
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!       Analyse       !!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+% half
+\newcommand{\half}{\ensuremath{\frac{1}{2}}}
+
+% hessienne
+\newcommand{\Hess}{\ensuremath{ \mathrm{H}} }
+
+% envelope convexe
+\newcommand{\cof}{\ensuremath{ \mathrm{\barre{co}\,} }}
+
+
+% le support d'une fonction
+\newcommand{\Supp}{\ensuremath{ \mathrm{Supp\,} }}
+
+% L'intérieur d'un ensemble est noté avec \ronde ou \interieur.
+% Exemple: $ \ronde{A} $
+\newcommand{\ronde}[1]{\ensuremath{\overset{\circ}{#1}}}
+\newcommand{\interieur}[1]{\ronde{#1}}              % Synonyme
+
+
+%% Belles inégalites
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+
+\renewcommand{\succeq}{\succcurlyeq}
+\renewcommand{\preceq}{\preccurlyeq}
+
+%% Dérivations partielles
+\newcommand{\pd}[2]{ \f{ \partial #1}{\partial #2} }
+\newcommand{\pdd}[2]{\f{ \partial^2 #1}{\partial #2^2} }
+
+%% Espace de fonctions
+\newcommand{\fun}[3]{\Cscr^{#1}(#2,#3)}
+\newcommand{\funt}[3]{\Cscr^{#1}(#2,#3)}
+\newcommand{\fund}[2]{\Cscr^{#1}(#2)}
+\newcommand{\funu}[1]{\Cscr^{#1}}
+\newcommand{\funinf}{\funu{\infty}}
+\newcommand{\funs}{\Cscr}  % fun simple !
+
+
+\newcommand{\Ct}[3]{\Cscr^{#1}(#2,#3)} %synonymes
+\newcommand{\Cd}[2]{\Cscr^{#1}(#2)}
+\newcommand{\Cu}[1]{\Cscr^{#1}}
+\newcommand{\Co}{\Cscr_{0}}
+
+
+%% Gradient
+\newcommand{\grad}{\ensuremath{\mathop{\vect{\rm grad}\,}\nolimits}}
+\renewcommand{\div}{\ensuremath{\mathrm{div\,}}}
+\newcommand{\rot}{\ensuremath{\mathrm{rot\,}}}
+
+% Les constantes.
+\newcommand{\cte}{\ensuremath{C^{\mbox{\scriptsize{te}}}}}
+\newcommand{\Cte}{\cte}                     % Synonyme
+
+% quelques fonctions a la francaise
+\newcommand{\sh}{\ensuremath{\mathrm{sh\,}}}
+\newcommand{\ch}{\ensuremath{\mathrm{ch\,}}}
+
+% fnction hololo
+\newcommand{\res}{\ensuremath{\mathrm{Res\,}}}
+
+% la frontiere
+\newcommand{\fr}{\ensuremath{\mathrm{Fr\;}}}
+
+% fonction indicatrice
+\newcommand{\ind}[1]{\ensuremath{\boldsymbol{1}_{#1}}}
+
+
+% les espaces L^p
+\newcommand{\esplp}[1]{L^{#1}}
+\newcommand{\Lun}{\esplp{1}}
+\newcommand{\Ldeux}{\esplp{2}}
+\newcommand{\Lp}{\esplp{p}}
+\newcommand{\Lpprime}{\esplp{p'}}
+\newcommand{\Lq}{\esplp{q}}
+\newcommand{\Linf}{\esplp{\infty}}
+\newcommand{\LinfT}{\esplp{\infty}(\TT)}
+\newcommand{\LinfR}{\esplp{\infty}(\RR)}
+\newcommand{\LunT}{\esplp{1}(\TT)}
+\newcommand{\LunR}{\esplp{1}(\RR)}
+\newcommand{\LdeuxT}{\esplp{2}(\TT)}
+\newcommand{\LdeuxR}{\esplp{2}(\RR)}
+\newcommand{\LpT}{\esplp{p}(\TT)}
+\newcommand{\LpR}{\esplp{p}(\RR)}
+
+
+% R plus
+\newcommand{\Rplus}{\RR\plus}
+\newcommand{\Rmoins}{\RR\moins}
+\newcommand{\Rmoinsn}{ {{\RR_{\moins}}^{\!\!\!\!n}} }
+\newcommand{\Rplusn}{ {{\RR_{\plus}}^{\!\!\!\!n}} }
+\newcommand{\Rplusetoile}{\RR\plus^{\!*}}
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!    Probabilitite   !!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!                     !!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+% Exemple: $ \proba{X} $
+\newcommand{\proba}[1]{\ensuremath{\text{P}\left(#1\right)}}
+
+
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!                       !!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!   Groupes & Algebre   !!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!                       !!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+%% Groupe de Galois
+\newcommand{\gal}[2]{\ensuremath{\mathrm{Gal}}(#1/#2)}
+\newcommand{\galq}{\gal{\ol{\QQ}}{\QQ}}
+
+% Le groupe symétrique.
+\newcommand{\sym}{\ensuremath{\mathBB{S}}}          % Au choix
+\newcommand{\GS}{\ensuremath{\mathfrak{S}}}         % Au choix
+\newcommand{\SG}{\ensuremath{\mathfrak{S}}}         % Synonyme
+
+% Ordre d'un groupe
+\newcommand{\ord}{\ensuremath{\mathrm{ord\,}}}
+
+% groupe, ideal engendre
+\newcommand{\eng}[1]{{\langle #1 \rangle}}
+
+
+% des jolies injectiosn et surjections
+\def\surj{{\twoheadrightarrow}}
+\def\inj{{\hookrightarrow}}
+
+% et des raccourcis pour les autres fleches
+\def\ra{{\,\rightarrow\,}}
+\def\lra{{\,\longrightarrow\,}}
+
+% isomorphe
+\newcommand{\isom}[1]{\ensuremath{\overset{{\rm {\textrm{ \tiny #1}}}}{\simeq}}}
+
+
+
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!                                    !!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!   Algèbre linéaire et bilinéaire   !!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!                                    !!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+%% matrice diagonale
+%\newcommand{\diag}{\ensuremath{\mathrm{diag\,}}}
+
+%% Groupe linéaire et sous groupe
+\newcommand{\GL}[1]{\ensuremath{\mathrm{GL}}(#1)}
+\newcommand{\GLm}[2]{\ensuremath{\mathrm{GL}_{#1}(#2)}}
+\newcommand{\GLn}[1]{\GLm{n}{#1}}
+
+\newcommand{\GLmplus}[1]{\ensuremath{\mathrm{GL}_{#1}^{+}(\RR)}}
+\newcommand{\GLnplus}{\GLmplus{n}}
+
+\newcommand{\GLmmoins}[1]{\ensuremath{\mathrm{GL}_{#1}^{-}(\RR)}}
+\newcommand{\GLnmoins}{\GLmmoins{n}}
+
+\newcommand{\SL}[1]{\ensuremath{\mathrm{SL}}(#1)}
+\newcommand{\SLm}[2]{\ensuremath{\mathrm{SL}}_{#1}(#2)}
+\newcommand{\SLn}[1]{\SLm{n}{#1}}
+
+\newcommand{\SO}[1]{\ensuremath{\mathrm{SO}}(#1)}
+\newcommand{\SOm}[1]{\ensuremath{\mathrm{S  O}}_{#1}(\RR)}
+\newcommand{\SOn}{\SOm{n}}
+
+\renewcommand{\O}[1]{\ensuremath{\mathrm{O}}(#1)}
+\newcommand{\Orthm}[1]{\ensuremath{\mathrm{O}}_{#1}(\RR)}
+\newcommand{\On}{\Orthm{n}}
+
+%% Matrice de taille ?? à coefficient dans ??
+\newcommand{\matt}[3]{\ensuremath{\mathrm M}_{#1\times #2}(#3)}
+\newcommand{\mat}[2]{\ensuremath{\mathrm M}_{#1}(#2)}
+\newcommand{\mn}[1]{\mat{n}{#1}}
+\newcommand{\mnr}{\mn{\RR}}
+
+
+%% Image et noyau
+\renewcommand{\Im}{\ensuremath{\mathrm{Im\,}}}
+\newcommand{\im}{\ensuremath{\mathrm{Im\,}}}
+\newcommand{\Ker}{\ensuremath{\mathrm{Ker\,}}}
+\renewcommand{\ker}{\ensuremath{\mathrm{Ker\,}}}
+\newcommand{\coker}{\ensuremath{\mathrm{Coker\,}}}
+
+%% rang
+\newcommand{\rg}{\ensuremath{\mathrm{rg\,}}}
+
+%% espace vectoriel engendré
+\newcommand{\Vect}{\ensuremath{\mathrm{vect\,}}}
+
+%% Pour les homomorphismes
+\renewcommand{\hom}[3]{\ensuremath{\mathrm{Hom}_{#1}(#2,#3)}}
+\newcommand{\Hom}[3]{\hom{#1}{#2}{#3}}
+\newcommand{\End}[2]{\ensuremath{\mathrm{End}_{#1}(#2)}}
+\newcommand{\EndG}[1]{\ensuremath{\End{\ins{Gr}}{#1}}}
+
+\newcommand{\applin}[2]{\Lscr({#1},#2)}
+\newcommand{\Endo}[1]{\Lscr({#1})}
+
+%% L'identité
+\newcommand{\id}{\ensuremath{\mathrm{id}}}
+\newcommand{\Id}{\ensuremath{\mathrm{Id}}}
+%%% avec ou sans \, ???? \mathrm{id\,}
+
+
+%% L'opérateur ad (\ad est deja pris)
+\newcommand{\aad}{\ensuremath{\mathrm{ad}}}
+
+% La transposée d'une matrice: $\trans{A}$.
+\newcommand{\trans}[1]{\ensuremath{{#1}^{\!\top}}}
+
+% L'orthogonal d'un espace
+\newcommand{\orth}[1]{\ensuremath{{#1}^{\perp}}}
+
+%% on a aussi
+%\newcommand{\tr}[1]{{\,^t\!{#1}}}
+
+% La trace d'une matrice
+%\newcommand{\tr}{\ensuremath{\mathrm{tr\,}}}
+%\newcommand{\trace}{\ensuremath{\mathrm{tr\,}}} % synomyne
+\newcommand{\trace}{\ensuremath{\mathrm{trace}}\xspace}
+\newcommand{\tr}{\ensuremath{\mathrm{trace}}\xspace}
+
+% Matrice d'un endomorphisme dans une base
+\newcommand{\Mat}{\ensuremath{\mathrm{Mat\,}}}
+
+% Le spectre -- deja defini (en haut)
+% \newcommand{\spec}{\ensuremath{\mathrm{Spec\,}}}
+
+% Bloc de jordan
+%\newcommand{\Jor}{\ensuremath{\mathrm{Jor}}}
+\newcommand{\Jor}{\ensuremath{\Jj}}
+
+% Bloc compagnon
+\newcommand{\Comp}{\ensuremath{\Cc}}
+
+
+% Les normes
+%
+% La commande standard est \norm, qui doit être utilisée dans pratiquement
+% tous les cas.
+% Il y a toutefois quelques cas pour lesquels on a vraiment besoin de barres
+% plus grandes, qui couvrent tout l'argument. On utilise alors \bignorm.
+%
+% Exemple: $ \bignorm{    \f{1}{2}   \vect{u}    } $
+%
+% évitez de diviser un vecteur par un scalaire, comme dans $\f{\vect u}{2}$.
+%
+% Enfin, le sup d'un endomorphisme sur la boule unitï¿½se note avec trois
+% barres verticales.
+%
+% Exemple: $ \trinorm{u} $
+
+\newcommand{\norm}[1]{\ensuremath{\Arrowvert #1 \Arrowvert}}
+\newcommand{\bignorm}[1]{\ensuremath{\left\Arrowvert #1 \right\Arrowvert}}
+\newcommand{\trinorm}[1]{\ensuremath{|\hskip -1 pt|\hskip -1 pt| #1%
+    |\hskip -1 pt|\hskip -1 pt|}}
+
+%% produit scalaire
+\newcommand{\prods}[2]{{\langle #1,#2 \rangle}}
+
+%% Espace de formes quadratiques
+\newcommand{\Sym}{\ensuremath{\Ss}}
+\newcommand{\Symn}{\ensuremath{\Ss_n}}
+\newcommand{\Sy}{\ensuremath{\Ss_n}}
+\newcommand{\sdp}{\ensuremath{{\Ss_n^{\plus}}}}
+\newcommand{\sdn}{\ensuremath{\Ss_n^-}}
+\newcommand{\sdpp}{\ensuremath{\Ss_n^{\plus\plus}}}
+\newcommand{\defpos}{\ensuremath{\Ss_n^{++}}}
+\newcommand{\defneg}{\ensuremath{\Ss_n^{--}}}
+\newcommand{\quadra}{\ensuremath{\Qq}}
+
+%%%% Modude de torsion
+\newcommand{\tors}[1]{#1_{\ins{tors}}}
+
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!                                    !!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!       Les nombres complexes        !!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!                                    !!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+\newcommand{\barre}[1]{\ensuremath{\overline{#1}}}      % Conjuguée
+\newcommand{\Arg}{\ensuremath{\mathrm Arg\,}}           % Argument
+\newcommand{\reel}{\ensuremath{\mathop{\mathscr Re}\nolimits}}
+\newcommand{\image}{\ensuremath{\mathop{\mathscr I\!m}\nolimits}}
+
+%% Pour avoir un joli i pour les complexes
+\renewcommand{\imath}{i}%{\mathrm{i}}
+
+
+
+
+
+
+
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!!!!!                    !!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!    Arithmetiques   !!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!                    !!!!!!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+%pgcd et ppcm
+\newcommand{\pgcd}{\ensuremath{\mathrm{pgcd\,}}}
+\renewcommand{\gcd}{\pgcd}
+\newcommand{\ppcm}{\ensuremath{\mathrm{ppcm\,}}}
+
+% Les anneaux cycliques.
+\newcommand{\ZpZ}[1][\ensuremath{n}]{\ensuremath{\ZZ/#1\ZZ}}
+    % \ZpZ[n] --> Z/nZ
+    % \ZpZ[2] --> Z/2Z
+    % \ZpZ    --> Z/nZ
+\newcommand{\zpz}{\ensuremath{\ZpZ[p]}}
+\newcommand{\znz}{\ensuremath{\ZpZ[n]}}
+\newcommand{\zpzstar}{\ensuremath{\zpz^*}}
+
+% Corps finis
+\newcommand{\fp}{\ensuremath{\FF_{\!p}}}
+\newcommand{\fq}{\ensuremath{\FF_{\!q}}}
+
+% Les anneaux de polynmes.
+% Exemple: $ P \in \CX    \implique    P \in \RX $
+\newcommand{\RX}{\ensuremath{\RR[X]}}
+\newcommand{\CX}{\ensuremath{\CC[X]}}
+\newcommand{\zpzx}{\ensuremath{\zpz[X]}}
+\newcommand{\fpx}{\ensuremath{\fp[X]}}
+\newcommand{\fqx}{\ensuremath{\fq[X]}}
+
+\newcommand{\racsimple}{\ensuremath{\Sscr_{\!rs}}}
+
+
+%% symbole de Legendre
+\newcommand{\legsymb}[2]{ \pa{\f{#1}{#2}} }
+
+% caracteristique
+% a utiliser comme suit: \car(k) (sinon rajouter \, a la fin comme pgcd)
+\newcommand{\car}{\ensuremath{\mathrm{car}}}
+
+%% Nombres de Combinaisons
+\newcommand{\Comb}[2]{\ensuremath{\C_{#1}^{#2}}}
+\newcommand{\comb}[2]{\ensuremath{\begin{pmatrix}#1\\#2\\\end{pmatrix}}}
+
+%% modulo
+%%\renewcommand{\mod}{\ensuremath{\mathrm \;mod\,}}
+
+
+%-----------------------------------------------------------------------
+%!!!!!!!!!!!!!!!!!!!!!!!!!                    !!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!    Optimization    !!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!!!!!!!!!!!!!!!!!!                    !!!!!!!!!!!!!!!!!!!!!!!!!
+%-----------------------------------------------------------------------
+
+
+\newcommand{\accol}[1]{{\left\{ \begin{array}{ll} #1 \end{array} \right.}}
+
+\newcommand{\gu}{{g_{\mathcal{U}}}}
+
+\newcommand{\bx}{{\bar{x}}}
+\newcommand{\barx}{{\bar{x}}}
+\newcommand{\barg}{{\bar{g}}}
+\newcommand{\barU}{{\bar{U}}}
+\newcommand{\barV}{{\bar{V}}}
+\newcommand{\barlam}{{\bar{\la}_{\textrm{max}}}}
+\newcommand{\baral}{{\bar{\al}}}
+
+\newcommand{\Rbar}{{\bar{\RR}}}
+\newcommand{\Convbar}{{\overline{\Conv}}}
+\newcommand{\co}{{\overline{\Conv}}}
+
+
+%\renewcommand{\tf}{\widetilde{f}}  % tilde f ATTENTION tue le \tf de \f{}{}...
+\newcommand{\tlam}{\widetilde{\la}_{\textrm{max}}}
+%\newcommand{\wt}[1]{\widetilde{#1}} 
+
+
+\newcommand{\TMB}{{\mathrm{T}\mathcal{M}}}
+\newcommand{\NMB}{{\mathrm{N}\mathcal{M}}}
+\newcommand{\TM}{{\mathrm{T}_{\!\mathcal{M}}}}
+\newcommand{\NM}{{\mathrm{N}_{\!\mathcal{M}}}}
+\newcommand{\nM}{{\nabla_{\!\mathcal{M}}}}
+\newcommand{\HM}{{\nabla^2_{\!\mathcal{M}}}}
+
+\newcommand{\sub}{\partial}
+\newcommand{\regsub}{\hat{\partial}}
+\newcommand{\subreg}{\hat{\partial}}
+\newcommand{\clarkesub}{\bar{\partial}}
+
+\newcommand{\phie}{\varphi^{\exp}}
+\newcommand{\phit}{\varphi^{\tan}}
+\newcommand{\phip}{\varphi^{\mathrm{proj}}}
+\newcommand{\phix}{\varphi^{\mathrm{prox}}}
+
+\newcommand{\rf}{f_{|_\Mm}} % restriction of f to M
+
+\newcommand{\pdg}{{\texttt{pdg}\ }}
+
+\newcommand{\PP}[1]{P_{#1}}  % Proximal Point
+%\newcommand{\proj}[1]{\mathrm{P}_{#1}}  % Projection defined above
+
+
+\newcommand{\psdp}{\mathrm{P}_{\!\!\Ss_n^{\plus}}} % proj
